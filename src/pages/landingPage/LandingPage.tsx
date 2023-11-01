@@ -8,13 +8,13 @@ import CJSImage from  '../../assets/png/conjs-img.png'
 import GNGImage from  '../../assets/png/gonogo-img.png'
 
 const gameInfos = [
-  // {
-  //   name: 'เขียวไป แดงหยุด',
-  //   title: 'Go-Nogo',
-  //   domain: 'สมาธิ',
-  //   gameUri: 'go-nogo',
-  //   image: `${GNGImage}`,
-  // },
+  {
+    name: 'เขียวไป แดงหยุด',
+    title: 'Go-Nogo',
+    domain: 'สมาธิ',
+    gameUri: 'go-nogo',
+    image: `${GNGImage}`,
+  },
   // {
   //   name: 'หากันจนเจอ',
   //   title: 'Conjunction Search',

@@ -7,9 +7,9 @@ import SSGame from './pages/game/ssGame/SSGame';
 // import CJSLanding from './pages/gameLanding/cjsLanding/CJSLanding';
 // import CJSInstruction from './pages/gameInstruction/cjsInstruction/CJSInstruction';
 // import CJSGame from './pages/game/cjsGame/CJSGame';
-// import GNGLanding from './pages/gameLanding/gngLanding/GNGLanding';
-// import GNGInstruction from './pages/gameInstruction/gngInstruction/GNGInstruction';
-// import GNGGame from './pages/game/gngGame/GNGGame';
+import GNGLanding from './pages/gameLanding/gngLanding/GNGLanding';
+import GNGInstruction from './pages/gameInstruction/gngInstruction/GNGInstruction';
+import GNGGame from './pages/game/gngGame/GNGGame';
 import LoadingSpinner from './components/loadingSpinner/LoadingSpinner';
 import { getDataFromLocalStorage, saveDataToLocalStorage } from './uitls/offline';
 // import { getDataFromLocalStorage } from './uitls/offline';
@@ -86,9 +86,9 @@ function App() {
             {/* <Route path="/conjunction-search" element={<CJSLanding />}></Route> */}
             {/* <Route path="/conjunction-search/instruction" element={<CJSInstruction />}></Route> */}
             {/* <Route path="/conjunction-search/trial" element={<CJSGame />}></Route> */}
-            {/* <Route path="/go-nogo" element={<GNGLanding />}></Route> */}
-            {/* <Route path="/go-nogo/instruction" element={<GNGInstruction />}></Route> */}
-            {/* <Route path="/go-nogo/trial" element={<GNGGame />}></Route> */}
+            <Route path="/go-nogo" element={<GNGLanding />}></Route>
+            <Route path="/go-nogo/instruction" element={<GNGInstruction />}></Route>
+            <Route path="/go-nogo/trial" element={<GNGGame />}></Route>
           </Routes>
           <LoadingSpinner />
       </Router>
