@@ -10,3 +10,5 @@ function SS_D_PRIME (score: number, age: number) {
   const sd = age > 65 ? SD2 : SD1
   return (score - mu) / sd
 }
+
+export { SS_D_PRIME }
