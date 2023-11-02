@@ -10,10 +10,11 @@ import clickSoundSrc from '../../../assets/sound/click.mp3'
 import combo2SoundSrc from '../../../assets/sound/combo2.mp3';
 import losingSoundSrc from '../../../assets/sound/losingStreak.mp3';
 import $ from 'jquery';
+import moment from 'moment-timezone';
 import RotateAlert from '../../../components/rotateAlert/RotateAlert';
 import { Shuffle } from '../../../scripts/shuffle';
 import { samplingFromList } from '../../../uitls/main';
-import moment from 'moment-timezone';
+import { SS_D_PRIME, SS_Percentile } from '../../../uitls/ss_norm';
 import axios from 'axios';
 import LoadingSpinner from '../../../components/loadingSpinner/LoadingSpinner';
 
@@ -34,16 +35,16 @@ const radius: number = (()=>{
     const baseValue = (document.documentElement.clientWidth + document.documentElement.clientHeight) / (13.61*2); 
     return Number.parseFloat(baseValue.toFixed(2)); 
 })();
-const cueColor: string = getComputedStyle(document.documentElement).getPropertyValue('--cue-color');
-const cueBorderColor: string = getComputedStyle(document.documentElement).getPropertyValue('--cue-border-color');
-const restColor: string = getComputedStyle(document.documentElement).getPropertyValue('--rest-color');
-const restBorderColor: string = getComputedStyle(document.documentElement).getPropertyValue('-rest-border-color');
+let cueColor: string = getComputedStyle(document.documentElement).getPropertyValue('--cue-color').trim();
+let cueBorderColor: string = getComputedStyle(document.documentElement).getPropertyValue('--cue-border-color').trim();
+const restColor: string = getComputedStyle(document.documentElement).getPropertyValue('--ss-rest-color').trim();
+const restBorderColor: string = getComputedStyle(document.documentElement).getPropertyValue('--rest-border-color').trim();
 const rampingCorrectCount: number = 3;
 const maxFailStreakCount: number = 2;
 const maxFailCount: number = 3; 
 
 // Initaial values
-let trialNumber = 10;
+let trialNumber = 20;
 let currSpan = initialSpan;
 let currTrial: number = 0;
 let allSpan: number[] = [];
@@ -92,6 +93,8 @@ let scoringDataResult: any[] = [];
 let metricDataResult: any[] = [];
 let directionMode: string[] = [];
 let postEntryResult;
+let dprime;
+let scorePercentile;
 
 function SSGame(props) {
   const navigate = useNavigate();
@@ -194,13 +197,14 @@ function SSGame(props) {
       }
 
       if (currAns.length === currSpan) {
+          $('.cirButton').removeClass('hoverDisabled'); 
+          $('.cirButton').addClass('hoverDisabled'); 
           cueData(currSeq, cueColor, cueBorderColor, cueStartTime, cueEndTime);
           probeData(probeNumber, allProbe, restColor, restBorderColor, probeShape, probeParams, radius, probeAngularPosition);
           answerData(currAns, answerTimePerTrial);
           timeoutList.push(
               setTimeout(function() {
                   $('.cirButton').removeClass('clicked');
-                  $('.cirButton').addClass('hoverDisabled'); 
               }, 150)
           )
 
@@ -213,6 +217,7 @@ function SSGame(props) {
 
           if (equalCheck(currAns, currSeq)) {
               $('#goSignal').html("ถูก");
+              checkHitSpanSize();
               setProgressValue(progressValue + 1);
               combo2Sound();
               currSeq = [];
@@ -280,7 +285,7 @@ function SSGame(props) {
           }
           
           allReactionTime.push(reactionTime.toString());
-          let lastReaction = reactionTime[reactionTime.length-1];
+          let lastReaction = reactionTime[reactionTime.length - 1];
           allReactionTrial.push(lastReaction);
           reactionTime = [];
       }
@@ -290,6 +295,28 @@ function SSGame(props) {
           runIsOver();
       }
   };
+
+  function checkHitSpanSize() {
+    let reactionTimePerClick: number[] = [];
+    // push in 1st index to the reactionTimePerClick array
+    reactionTimePerClick.push(reactionTime[0]);
+    for (let clickIndex = 0; clickIndex < reactionTime.length; clickIndex++){
+        // currClick = the present time in present index (where we started)
+        let currClick = reactionTime[clickIndex];
+        // nextClick = the next time in next index (the 2nd 3rd and so on clicked)
+        let nextClick;
+        if (clickIndex < reactionTime.length - 1){
+            nextClick = reactionTime[clickIndex + 1];
+        }
+
+        // this condition prevent NaN because there is nothing beyond the last index so it 'undefined'
+        if (nextClick !== undefined){ // push every time that nextClick !== undefined
+            reactionTimePerClick.push(nextClick - currClick);
+        }
+    }
+    let avgTrialReactionTime = reactionTimePerClick.reduce((sum, time) => {return sum + time}) / reactionTimePerClick.length;
+    hitRt.push(avgTrialReactionTime);
+  }
 
   function initiateData() {
       allSpan = []; 
@@ -567,25 +594,26 @@ function seqGenerator() {
 
   function Done() {
       testEndTime = thisTime();
-      setIsItDone(true);
-      setIsItFetching(true); // make loading spinner appear while 
-      let end = endTime();
       score = total;
+      dprime = SS_D_PRIME(score, props.userAge);
+      scorePercentile = SS_Percentile(score, props.userAge);
+      setIsItDone(true);
+    //   setIsItFetching(true); // make loading spinner appear while 
+      let end = endTime();
       trialDataResult = trialData(allSpan, cueDataResult, probeDataResult, allAnswerEnableTime, answerDataResult);
-    //   scoringDataResult = scoringData(trialNumber, spanMultiplier, score);
+      scoringDataResult = scoringData(trialNumber, spanMultiplier, score);
       metricDataResult = metricData(trialNumber, summaryCorrect, spanInCorrectAns, enterStruggleTimeCount);
       postEntryResult = postEntry(trialDataResult, gameLogicSchemeResult, score, metricDataResult);
-      //   axios.post('http://127.0.0.1:8000/kyd-portal/spatial-span/post', postEntryResult)
-      axios.post('https://hwsrv-1063269.hostwindsdns.com/kyd-portal/spatial-span/post', postEntryResult)
-            .then(function (postEntryResult) {
-                console.log(postEntryResult)
-            })
-            .catch(function (error) {
-                console.log('error')
-            })
-            .finally(function () {
-                setIsItFetching(false); // stop loading spinner when finished fetching
-            });
+      console.log(postEntryResult)
+    //   axios.post('https://hwsrv-1063269.hostwindsdns.com/kyd-portal/spatial-span/post', postEntryResult)
+    //         .then(function (postEntryResult) {
+    //         })
+    //         .catch(function (error) {
+    //             console.log('error')
+    //         })
+    //         .finally(function () {
+    //             setIsItFetching(false); // stop loading spinner when finished fetching
+    //         });
   }
 
   function cueData(currSeq: string | any[], cueColor: string, cueBorderColor: string, cueStartTime: any[], cueEndTime: any[]){
@@ -698,7 +726,7 @@ function seqGenerator() {
               'struggleTimeCount', 
               'highestSpan',
               'averageSpan',
-              'averageReactionTime'];
+              'averageHitReactionTime'];
       let metricValue 
           = [summaryCorrect, 
               trialNumber - summaryCorrect, 
@@ -707,7 +735,7 @@ function seqGenerator() {
               spanInCorrectAns[spanInCorrectAns.length - 1],
               sumCorrectSpan / spanInCorrectAns.length,
               avgHitRt];
-      let metricUnit = [null, null, '%', null, null, null, 'ms'];
+      let metricUnit = [null, null, '%', null, null, null, 's'];
       let metricDescription 
           = ['Total number of correct trials', 
               'Total number of incorrect trials', 
@@ -715,7 +743,7 @@ function seqGenerator() {
               'Total number of entered struggle loop', 
               'The highest span that user reached',
               'The average span that user entered',
-              'The average time per trials that hit'];
+              'The average of all hit reaction time'];
       for (let i = 0; i < metricName.length; i++){
           let obj_to_append
           obj_to_append = {
@@ -731,7 +759,9 @@ function seqGenerator() {
 
   function postEntry(trialDataResult: any[], gameLogicSchemeResult: { game: string; schemeName: string; version: number; variant: string; parameters: { trialNumber: { value: any; unit: null; description: string }; flashDuration: { value: any; unit: string; description: string }; flashInterval: { value: any; unit: string; description: string }; initialSpan: { value: any; unit: null; description: string }; probeNumber: { value: any; unit: null; description: string }; probeAngularPosition: { value: any; unit: string; description: string }; rampingCorrectCount: { value: any; unit: null; description: string }; maxFailStreakCount: { value: any; unit: null; description: string }; maxFailCount: { value: any; unit: null; description: string } }; description: string }, score: number, metricDataResult: any[]){
       postEntryResult = {
-        "userId" : props.userId,
+        "userAge" : props.userAge,
+        "userBirth" : props.userBirth,
+        "userDegree" : props.userDegree,
         "start" : testStartTime,
         "end" : testEndTime,
         "score" : score,
@@ -742,7 +772,6 @@ function seqGenerator() {
             "description" : 'all important data per trial'
         },
         "gameLogicScheme" : gameLogicSchemeResult,
-        "ref" : props.refId,
       }
       return postEntryResult;
   }
@@ -755,20 +784,22 @@ function seqGenerator() {
               scorePerTrial.push(allSpan[correctIndex] * spanMultiplier);
               summaryCorrect++;
               spanInCorrectAns.push(allSpan[correctIndex]);
-              hitRt.push(allReactionTrial[correctIndex]);
+            //   hitRt.push(allReactionTrial[correctIndex]);
           } else if (checkAns[correctIndex] === 0 && checkAns[correctIndex + 1] === 1) {
               summaryCorrect--;
-        }
+          }
       }
 
       if (hitRt.length !== 0){
-
-          sumHitRt = hitRt.reduce((sum, time) => {
-            return sum + time;
-            });
+        sumHitRt = hitRt.reduce((sum, time) => {
+          return sum + time;
+          });
+      } else {
+        hitRt.push(0);
+        sumHitRt = hitRt;
       }
 
-        avgHitRt = sumHitRt / hitRt.length;
+      avgHitRt = sumHitRt / 1000 / hitRt.length;
       
       if (scorePerTrial.length !== 0){
           sumScores = scorePerTrial.reduce((sum, score) => {
@@ -793,8 +824,8 @@ function seqGenerator() {
   } 
 
   function backToLandingPage() {
-      navigate('/');
-      refreshPage();
+      navigate('/landing');
+      window.location.reload();
   }
 
   return (
@@ -816,7 +847,7 @@ function seqGenerator() {
         {isItFetching && <LoadingSpinner fetchTime={isItFetching}/>}  
         {isItDone ? 
         <div>
-            {<ScoreSummaryOverlay sumScores={total} refreshPage={refreshPage} backToLandingPage={backToLandingPage}/>}
+            {<ScoreSummaryOverlay sumScores={total} userAge={props.userAge} dprime={dprime} scorePercentile={scorePercentile} refreshPage={refreshPage} backToLandingPage={backToLandingPage}/>}
         </div>
         : null}
         {<RotateAlert />}
