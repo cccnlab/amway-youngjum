@@ -90,12 +90,12 @@ const VAL2_201_PROB = [0.        , 0.        , 0.        , 0.        , 0.0053475
 
 function ageGroup1Prob (score: number) {
   const probIndex = Math.min(Math.floor(score / 600),200)
-  return Math.round(VAL1_201_PROB[probIndex])
+  return Math.round(VAL1_201_PROB[probIndex]*100)
 }
 
 function ageGroup2Prob (score: number) {
   const probIndex = Math.min(Math.floor(score / 600),200)
-  return Math.round(VAL2_201_PROB[probIndex])
+  return Math.round(VAL2_201_PROB[probIndex]*100)
 }
 
 function SS_Percentile (score: number, age: number) {
