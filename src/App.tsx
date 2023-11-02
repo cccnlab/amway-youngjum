@@ -11,10 +11,13 @@ import GNGLanding from './pages/gameLanding/gngLanding/GNGLanding';
 import GNGInstruction from './pages/gameInstruction/gngInstruction/GNGInstruction';
 import GNGGame from './pages/game/gngGame/GNGGame';
 import LoadingSpinner from './components/loadingSpinner/LoadingSpinner';
+import ParticipantForm from './pages/participantForm/participantForm';
 import { getDataFromLocalStorage, saveDataToLocalStorage } from './uitls/offline';
-// import { getDataFromLocalStorage } from './uitls/offline';
 
 function App() {
+  const [userBirth, setUserBirth] = useState("XXXX");
+  const [userAge, setUserAge] = useState("XXXX");
+  const [userDegree, setUserDegree] = useState("XXXX");
 
   // get data from query param 
   function getQueryParamFromURL(param) {
@@ -41,8 +44,8 @@ function App() {
         userId = getDataFromLocalStorage('userId');
         refId = getDataFromLocalStorage('ref');
     }
-    console.log(userId)
-    console.log(refId)
+    // console.log(userId)
+    // console.log(refId)
   }
 
   // call the function to check user and ref data
@@ -58,6 +61,24 @@ function App() {
     documentHeightWidth();
     window.addEventListener('resize', documentHeightWidth);
     window.addEventListener('orientationchange', documentHeightWidth);
+
+    let birth = getDataFromLocalStorage('userBirth');
+    let age = getDataFromLocalStorage('userAge');
+    let degree = getDataFromLocalStorage('userDegree');
+    if ((birth !== null && degree !== null && age !== null) && (birth !=="XXXX" && degree !== "XXXX" && age !== "XXXX")) {
+      setUserBirth(birth);
+      setUserAge(age);
+      setUserDegree(degree);
+      // window.location.replace(window.location.origin + "#/landing");
+    } 
+    
+    // uncomment this when deploy
+    // else {
+    //   if (window.location.href === "https://cccnlab.co/amway-youngjum/"){
+    //   } else {
+    //     window.location.replace("https://cccnlab.co/amway-youngjum/");
+    //   }
+    // }
   }, [])
   
   function documentHeightWidth() {
@@ -79,16 +100,17 @@ function App() {
     <>
       <Router>
           <Routes>
-            <Route path="/" element={< LandingPage />}></Route>
+            <Route path="/" element={< ParticipantForm setUserBirth={setUserBirth} setUserAge={setUserAge} setUserDegree={setUserDegree}/>}></Route>
+            <Route path="/landing" element={< LandingPage />}></Route>
             <Route path="/spatial-span" element={<SSLanding />}></Route>
             <Route path="/spatial-span/instruction" element={<SSInstruction />}></Route>
-            <Route path="/spatial-span/trial" element={<SSGame userId={userId} refId={refId}/>}></Route>
+            <Route path="/spatial-span/trial" element={<SSGame userBirth={userBirth} userAge={userAge} userDegree={userDegree}/>}></Route>
             {/* <Route path="/conjunction-search" element={<CJSLanding />}></Route> */}
             {/* <Route path="/conjunction-search/instruction" element={<CJSInstruction />}></Route> */}
             {/* <Route path="/conjunction-search/trial" element={<CJSGame />}></Route> */}
             <Route path="/go-nogo" element={<GNGLanding />}></Route>
             <Route path="/go-nogo/instruction" element={<GNGInstruction />}></Route>
-            <Route path="/go-nogo/trial" element={<GNGGame />}></Route>
+            <Route path="/go-nogo/trial" element={<GNGGame userBirth={userBirth} userAge={userAge} userDegree={userDegree}/>}></Route>
           </Routes>
           <LoadingSpinner />
       </Router>
