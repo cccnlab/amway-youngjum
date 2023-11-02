@@ -10,12 +10,13 @@ import combo1SoundSrc from '../../../assets/sound/combo1.mp3';
 import combo2SoundSrc from '../../../assets/sound/combo2.mp3';
 import combo3SoundSrc from '../../../assets/sound/combo3.mp3';
 import losingSoundSrc from '../../../assets/sound/losingStreak.mp3';
+import moment from 'moment';
 import RotateAlert from '../../../components/rotateAlert/RotateAlert';
 import { Shuffle } from '../../../scripts/shuffle';
-import moment from 'moment';
+import { GNG_D_PRIME, GNG_Percentile } from '../../../uitls/gng_norm';
 import axios from 'axios';
 
-let trialNumber = 100;
+let trialNumber = 10;
 let goSignalColor: string = getComputedStyle(document.documentElement).getPropertyValue('--go-color').trim();
 let noGoSignalColor: string = getComputedStyle(document.documentElement).getPropertyValue('--nogo-color').trim();
 let restColor: string = getComputedStyle(document.documentElement).getPropertyValue('--rest-color').trim();
@@ -38,7 +39,7 @@ let allInteractionEvent: string[] = [];
 let allClickEvent: string[] = [];
 let testEnd: Date[] = [];
 let rt: number[] = [];
-let hitRt: number[] = [0];
+let hitRt: number[] = [];
 let latestRtIndex = 0;
 let latestHitRtIndex = 0;
 let sumHitRt;
@@ -91,6 +92,8 @@ let userInteractionDataResult: any[] = [];
 let scoringDataResult: any[] = [];
 let metricDataResult: any[] = [];
 let postEntryResult;
+let dprime;
+let scorePercentile;
 
 function GNGGame(props) {
     const navigate = useNavigate();
@@ -131,6 +134,9 @@ function GNGGame(props) {
         correctCountForCombo = 0;
         correctRejectionCount = noChangeInOnlyGo + noChangeInGoNoGo;
         falseSignalRejectionCount = noGoInGoNoGo;
+        allNone = 0;
+        allGo = 0;
+        allNoGo = 0;
     }
 
     function gameLogicScheme(trialNumber, changeRate, noGoRate, onlyGoBlockRatio, goNoGoBlockRatio, flashDuration, baseFlashInterval, jitterBase, jitterAmplitude, timeOffset) {
@@ -177,7 +183,7 @@ function GNGGame(props) {
                 "nogoRate" : {
                     "value": noGoRate,
                     "unit": null,
-                    "description": "Rate of no go signal"
+                    "description": "Rate of nogo signal"
                 },
                 "onlyGoBlockRatio": {
                     "value": onlyGoBlockRatio,
@@ -424,9 +430,9 @@ function GNGGame(props) {
 
     function postEntry(cueDataResult, userInteractionDataResult, gameLogicSchemeResult, scoringDataResult, metricDataResult) {
         postEntryResult = {
-            // "userId" : props.userId,
-            // "userPhone" : props.userPhone,
-            "profileID" : "TOK",
+            "userAge" : props.userAge,
+            "userBirth" : props.userBirth,
+            "userDegree" : props.userDegree,
             "data" : {
                 "rawData" : {
                     "cueData" : cueDataResult,
@@ -486,9 +492,14 @@ function GNGGame(props) {
             scorePerTrial.push(rtScore);
         }
 
-        sumHitRt = hitRt.reduce((sum, score) => {
-            return sum + score;
-        });
+        if (hitRt.length !== 0){
+            sumHitRt = hitRt.reduce((sum, score) => {
+                return sum + score;
+            });
+        } else {
+            hitRt.push(0);
+            sumHitRt = hitRt;
+        }
 
         avgHitRt = sumHitRt / 1000 / hitRt.length;
         
@@ -505,6 +516,7 @@ function GNGGame(props) {
 
     function checkResp() {
         clickSound();
+        console.log(props.userAge)
         if (currEventId === 1) {
             if (haveToClick === false) {
                 haveToClick = true;
@@ -529,8 +541,8 @@ function GNGGame(props) {
                     comboCount.push(4);
                     combo3Sound();
                 }
+                hitCount++;
             }
-            hitCount++;
         } else {
             if (falseClicked === false) {
                 correctCountForCombo = 0;
@@ -553,8 +565,10 @@ function GNGGame(props) {
     }
 
     function Done() {
-        setIsItDone(true);
         score = Math.max(10000, Math.round(total));
+        dprime = GNG_D_PRIME(score, props.userAge);
+        scorePercentile = GNG_Percentile(score, props.userAge);
+        setIsItDone(true);
         cueDataResult = cueData(allColorPop, allTimeEvent);
         userInteractionDataResult = userInteractionData(allInteractionEvent, allClickEvent);
         scoringDataResult = scoringData(rtBound, trialNumber, score);
@@ -590,7 +604,8 @@ function GNGGame(props) {
     } 
 
     function backToLandingPage() {
-        navigate('/');
+        navigate('/landing');
+        window.location.reload();
     }
 
     return (
@@ -613,7 +628,7 @@ function GNGGame(props) {
         </div>
         {isItDone ? 
         <div>
-            {<ScoreSummaryOverlay sumScores={score} refreshPage={refreshPage} backToLandingPage={backToLandingPage}/>}
+            {<ScoreSummaryOverlay sumScores={score} userAge={props.userAge} dprime={dprime} scorePercentile={scorePercentile} refreshPage={refreshPage} backToLandingPage={backToLandingPage}/>}
         </div>
         : null}
         {<RotateAlert />}
