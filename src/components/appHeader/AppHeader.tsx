@@ -3,7 +3,9 @@ import './AppHeader.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 
 let defaultHeaderText = 'ยังจำ (Youngjum)';
+let GNGHeaderText = 'เขียวไป แดงหยุด';
 let SSHeaderText = 'จำจด กดตาม';
+
 function AppHeader() {
   const [headerText, setHeaderText] = useState('');
   const [isHideHomeButton, setIsHideHomeButton] = useState(false);
@@ -12,19 +14,23 @@ function AppHeader() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (pathName === '/') {
+    if (pathName === '/landing') {
       setHeaderText(defaultHeaderText);
     } else if (pathName.includes('/spatial-span')) {
       setHeaderText(SSHeaderText);
+    // } else if (pathName.includes('/conjunction-search')) {
+    //   setHeaderText(CJSHeaderText);
+    } else if (pathName.includes('/go-nogo')) {
+      setHeaderText(GNGHeaderText);
     }
 
-    if (pathName !== '/spatial-span') {
+    if (pathName.includes('/instruction') || pathName.includes('/trial'))   {
       setIsHideHomeButton(true);
-    }
+    } 
   }, [])
   
   function backToLandingPage() {
-    navigate('/');
+    navigate('/landing');
   }
 
   return (
