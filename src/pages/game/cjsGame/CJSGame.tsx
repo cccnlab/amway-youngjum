@@ -757,7 +757,8 @@ function CJSGame(props): any {
     } 
 
     function backToLandingPage(){
-        navigate('/');
+        navigate('/landing');
+        window.location.reload();
     }
 
     return (
