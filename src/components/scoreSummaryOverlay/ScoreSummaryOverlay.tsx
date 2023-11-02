@@ -7,12 +7,14 @@ function ScoreSummaryOverlay(props) {
     <div className="summary">
       <div className="summaryContainer">
           <div className="summaryHeader">
-              <p className='thisScore'>คะแนนครั้งนี้</p>
-              <p className='bigScore'>{props.sumScores.toLocaleString()}</p>
+              <p className='thisScore'>คะแนนครั้งนี้ : {props.sumScores.toLocaleString()}</p>
+              <p className='thisScore'>d' : {(props.dprime).toFixed(1)} ({props.scorePercentile} %)</p>
+              {/* <p className='bigScore'>{props.sumScores.toLocaleString()}</p> */}
+
           </div>
           <div className="summaryBadge">
               <img src={scoreBadge} alt='badge' className={'medalBadge'}></img>
-              {/* <p className='highestScore'>คะแนนสูงสุด: 67,445</p> */}
+              <p className='highestScore'>อายุ : <b>{props.userAge}</b> ปี</p>
           </div>
           <div className="btnContainerSummary">
               <button className='summaryBtnPlayAgain' onClick={props.refreshPage}>{`เล่นอีกครั้ง`}</button>
