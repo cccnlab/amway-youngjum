@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/amway-youngjum/static/css/main.a053c8e4.css",
+    "main.js": "/amway-youngjum/static/js/main.ca01fb01.js",
+    "static/js/845.a175267e.chunk.js": "/amway-youngjum/static/js/845.a175267e.chunk.js",
+    "static/js/787.c709b677.chunk.js": "/amway-youngjum/static/js/787.c709b677.chunk.js",
+    "static/media/combo1.mp3": "/amway-youngjum/static/media/combo1.1bc6ea7eed39c4f2c3b8.mp3",
+    "static/media/combo2.mp3": "/amway-youngjum/static/media/combo2.dc4a26f58622d3a5a4c0.mp3",
+    "static/media/gonogo-img.png": "/amway-youngjum/static/media/gonogo-img.08938eb2418f1fbc937f.png",
+    "static/media/combo3.mp3": "/amway-youngjum/static/media/combo3.baee467a5476a005d616.mp3",
+    "static/media/ss-img.png": "/amway-youngjum/static/media/ss-img.933229e186dcdd3ea7d4.png",
+    "static/media/scoreBadge.png": "/amway-youngjum/static/media/scoreBadge.19ad617b855d5df93fd6.png",
+    "static/media/click.mp3": "/amway-youngjum/static/media/click.bac13dc239761d7d5b08.mp3",
+    "static/media/instructionFinished.png": "/amway-youngjum/static/media/instructionFinished.fed3583b2d80ff6a5f4b.png",
+    "static/media/losingStreak.mp3": "/amway-youngjum/static/media/losingStreak.3e9f53afed48af7cc022.mp3",
+    "static/media/rotate-phone.svg": "/amway-youngjum/static/media/rotate-phone.6172f756fbd62559e2be4c10385ec685.svg",
+    "index.html": "/amway-youngjum/index.html",
+    "main.a053c8e4.css.map": "/amway-youngjum/static/css/main.a053c8e4.css.map",
+    "main.ca01fb01.js.map": "/amway-youngjum/static/js/main.ca01fb01.js.map",
+    "845.a175267e.chunk.js.map": "/amway-youngjum/static/js/845.a175267e.chunk.js.map",
+    "787.c709b677.chunk.js.map": "/amway-youngjum/static/js/787.c709b677.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a053c8e4.css",
+    "static/js/main.ca01fb01.js"
+  ]
+}
