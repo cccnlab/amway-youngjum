@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/amway-youngjum/static/css/main.a053c8e4.css",
-    "main.js": "/amway-youngjum/static/js/main.604e6d0c.js",
+    "main.css": "/amway-youngjum/static/css/main.c195e0f4.css",
+    "main.js": "/amway-youngjum/static/js/main.817e448a.js",
     "static/js/845.a175267e.chunk.js": "/amway-youngjum/static/js/845.a175267e.chunk.js",
     "static/js/787.c709b677.chunk.js": "/amway-youngjum/static/js/787.c709b677.chunk.js",
     "static/media/combo1.mp3": "/amway-youngjum/static/media/combo1.1bc6ea7eed39c4f2c3b8.mp3",
@@ -15,13 +15,13 @@
     "static/media/losingStreak.mp3": "/amway-youngjum/static/media/losingStreak.3e9f53afed48af7cc022.mp3",
     "static/media/rotate-phone.svg": "/amway-youngjum/static/media/rotate-phone.6172f756fbd62559e2be4c10385ec685.svg",
     "index.html": "/amway-youngjum/index.html",
-    "main.a053c8e4.css.map": "/amway-youngjum/static/css/main.a053c8e4.css.map",
-    "main.604e6d0c.js.map": "/amway-youngjum/static/js/main.604e6d0c.js.map",
+    "main.c195e0f4.css.map": "/amway-youngjum/static/css/main.c195e0f4.css.map",
+    "main.817e448a.js.map": "/amway-youngjum/static/js/main.817e448a.js.map",
     "845.a175267e.chunk.js.map": "/amway-youngjum/static/js/845.a175267e.chunk.js.map",
     "787.c709b677.chunk.js.map": "/amway-youngjum/static/js/787.c709b677.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a053c8e4.css",
-    "static/js/main.604e6d0c.js"
+    "static/css/main.c195e0f4.css",
+    "static/js/main.817e448a.js"
   ]
 }
