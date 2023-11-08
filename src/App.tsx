@@ -15,6 +15,7 @@ import ParticipantForm from './pages/participantForm/participantForm';
 import { getDataFromLocalStorage, saveDataToLocalStorage } from './uitls/offline';
 
 function App() {
+  const [userGender, setUserGender] = useState("XXXX");
   const [userBirth, setUserBirth] = useState("XXXX");
   const [userAge, setUserAge] = useState("XXXX");
   const [userDegree, setUserDegree] = useState("XXXX");
@@ -61,24 +62,23 @@ function App() {
     documentHeightWidth();
     window.addEventListener('resize', documentHeightWidth);
     window.addEventListener('orientationchange', documentHeightWidth);
-
+    
+    let gender = getDataFromLocalStorage('userGender');
     let birth = getDataFromLocalStorage('userBirth');
     let age = getDataFromLocalStorage('userAge');
     let degree = getDataFromLocalStorage('userDegree');
-    if ((birth !== null && degree !== null && age !== null) && (birth !=="XXXX" && degree !== "XXXX" && age !== "XXXX")) {
+    if ((gender !== null && birth !== null && degree !== null && age !== null) && (gender !== "XXXX" && birth !=="XXXX" && degree !== "XXXX" && age !== "XXXX")) {
+      setUserGender(gender);
       setUserBirth(birth);
       setUserAge(age);
       setUserDegree(degree);
       // window.location.replace(window.location.origin + "#/landing");
-    } 
-    
-    // uncomment this when deploy
-    // else {
-    //   if (window.location.href === "https://cccnlab.co/amway-youngjum/"){
-    //   } else {
-    //     window.location.replace("https://cccnlab.co/amway-youngjum/");
-    //   }
-    // }
+    } else {
+      if (window.location.href === "https://cccnlab.co/amway-youngjum/"){
+      } else {
+        window.location.replace("https://cccnlab.co/amway-youngjum/");
+      }
+    }
   }, [])
   
   function documentHeightWidth() {
@@ -100,17 +100,17 @@ function App() {
     <>
       <Router>
           <Routes>
-            <Route path="/" element={< ParticipantForm setUserBirth={setUserBirth} setUserAge={setUserAge} setUserDegree={setUserDegree}/>}></Route>
+            <Route path="/" element={< ParticipantForm setUserGender={setUserGender} setUserBirth={setUserBirth} setUserAge={setUserAge} setUserDegree={setUserDegree}/>}></Route>
             <Route path="/landing" element={< LandingPage />}></Route>
             <Route path="/spatial-span" element={<SSLanding />}></Route>
             <Route path="/spatial-span/instruction" element={<SSInstruction />}></Route>
-            <Route path="/spatial-span/trial" element={<SSGame userAge={userAge}/>}></Route>
+            <Route path="/spatial-span/trial" element={<SSGame userGender={userGender} userAge={userAge} userBirth={userBirth} userDegree={userDegree}/>}></Route>
             {/* <Route path="/conjunction-search" element={<CJSLanding />}></Route> */}
             {/* <Route path="/conjunction-search/instruction" element={<CJSInstruction />}></Route> */}
             {/* <Route path="/conjunction-search/trial" element={<CJSGame />}></Route> */}
             <Route path="/go-nogo" element={<GNGLanding />}></Route>
             <Route path="/go-nogo/instruction" element={<GNGInstruction />}></Route>
-            <Route path="/go-nogo/trial" element={<GNGGame userAge={userAge}/>}></Route>
+            <Route path="/go-nogo/trial" element={<GNGGame userGender={userGender} userAge={userAge} userBirth={userBirth} userDegree={userDegree}/>}></Route>
           </Routes>
           <LoadingSpinner />
       </Router>

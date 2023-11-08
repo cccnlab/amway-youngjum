@@ -12,11 +12,13 @@ function lengthIsinRange(text: string): boolean {
 }
 
 export default function ParticipantForm(props:{
+    setUserGender: (gender:string)=>void
     setUserBirth: (birth:string)=>void
     setUserAge: (age:string)=>void
     setUserDegree: (degree:string)=>void
 }) {
     const navigate = useNavigate();
+    const [promptUserGender, setPromptUserGender] = useState("XXXX");
     const [promptUserBirth, setPromptUserBirth] = useState("XXXX");
     const [promptUserAge, setPromptUserAge] = useState("XXXX");
     const [promptUserDegree, setPromptUserDegree] = useState("XXXX");
@@ -35,67 +37,85 @@ export default function ParticipantForm(props:{
               กรุณากรอกข้อมูล
             </h2>
           </div>
-  
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6" >
               <div>
-                <label htmlFor="userBirth" className="block text-sm font-medium leading-6 text-gray-900">
-                  วันเดือนปีเกิด
-                </label>
-                <div className="mt-2">
-                  <input onChange={
-                    (e) => {
-                      setPromptUserBirth(e.target.value);
-                      const age = calculateAge(e.target.value);
-                      setPromptUserAge(age);
-                    }
-                  }
-                    id="userBirth"
-                    name="userBirth"
-                    type="date"
-                    min="1900-12-31"
-                    max="1999-12-31"
-                    autoComplete="userBirth"
-                    required
-                    className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="userDegree" className="block text-sm font-medium leading-6 text-gray-900">
-                  ระดับการศึกษาสูงสุด
+                <label htmlFor="userGender" className="block text-sm font-medium leading-6 text-gray-900">
+                  เพศ
                 </label>
                 <div className="mt-2">
                   <select onChange={
-                    (e) => {setPromptUserDegree(e.target.value);}
+                    (e) => {setPromptUserGender(e.target.value);}
                   }
                     className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6">
-                    <option defaultValue="">โปรดเลือกระดับการศึกษาสูงสุดของท่าน</option>
-                    <option value="-6">ต่ำกว่าระดับประถมศึกษาตอนปลาย</option>
-                    <option value="6">ระดับประถมศึกษาตอนปลาย</option>
-                    <option value="9">ระดับมัธยมศึกษาตอนต้น</option>
-                    <option value="12">ระดับมัธยมศึกษาตอนปลาย หรือระดับประกาศนียบัตรวิชาชีพ (ปวช.)</option>
-                    <option value="14">ระดับอนุปริญญา หรือระดับประกาศนียบัตรวิชาชีพชั้นสูง (ปวส.)</option>
-                    <option value="16">ระดับปริญญาตรี</option>
-                    <option value="16+">เทียบเท่า หรือสูงกว่าระดับปริญญาโท </option>
+                    <option defaultValue="">โปรดระบุเพศของท่าน</option>
+                    <option value="Female">หญิง</option>
+                    <option value="Male">ชาย</option>
                   </select>
                 </div>
               </div>
-  
+
+                <div>
+                  <label htmlFor="userBirth" className="block text-sm font-medium leading-6 text-gray-900">
+                    วันเดือนปีเกิด
+                  </label>
+                  <div className="mt-2">
+                    <input onChange={
+                      (e) => {
+                        setPromptUserBirth(e.target.value);
+                        const age = calculateAge(e.target.value);
+                        setPromptUserAge(age);
+                      }
+                    }
+                      id="userBirth"
+                      name="userBirth"
+                      type="date"
+                      min="1900-12-31"
+                      max="1999-12-31"
+                      autoComplete="userBirth"
+                      required
+                      className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="userDegree" className="block text-sm font-medium leading-6 text-gray-900">
+                    ระดับการศึกษาสูงสุด
+                  </label>
+                  <div className="mt-2">
+                    <select onChange={
+                      (e) => {setPromptUserDegree(e.target.value);}
+                    }
+                      className="block w-full px-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6">
+                      <option defaultValue="">โปรดระบุระดับการศึกษาสูงสุดของท่าน</option>
+                      <option value="-6">ต่ำกว่าระดับประถมศึกษาตอนปลาย</option>
+                      <option value="6">ระดับประถมศึกษาตอนปลาย</option>
+                      <option value="9">ระดับมัธยมศึกษาตอนต้น</option>
+                      <option value="12">ระดับมัธยมศึกษาตอนปลาย หรือระดับประกาศนียบัตรวิชาชีพ (ปวช.)</option>
+                      <option value="14">ระดับอนุปริญญา หรือระดับประกาศนียบัตรวิชาชีพชั้นสูง (ปวส.)</option>
+                      <option value="16">ระดับปริญญาตรี</option>
+                      <option value="16+">เทียบเท่า หรือสูงกว่าระดับปริญญาโท </option>
+                    </select>
+                  </div>
+                </div>
               <div>
                 <button onClick={()=>{
-                  if (promptUserBirth === 'XXXX' && promptUserDegree === 'XXXX'){
+                  if (promptUserGender === 'XXXX' && promptUserBirth === 'XXXX' && promptUserDegree === 'XXXX'){
                     alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                  } else if (promptUserGender === 'XXXX'){
+                    alert("กรุณาระบุเพศของท่าน");
                   } else if (promptUserBirth === 'XXXX'){
-                    alert("กรุณากรอกข้อมูลวันเดือนปีเกิด");
+                    alert("กรุณากรอกข้อมูลวันเดือนปีเกิดของท่าน");
                   } else if (promptUserDegree === 'XXXX'){
-                    alert("กรุณาเลือกระดับการศึกษาสูงสุด");
+                    alert("กรุณาระบุระดับการศึกษาสูงสุดของท่าน");
                   } else {
+                    props.setUserGender(promptUserGender);
                     props.setUserBirth(promptUserBirth);
                     props.setUserAge(promptUserAge);
                     props.setUserDegree(promptUserDegree);
                     navigate("/landing");
+                    saveDataToLocalStorage('userGender', promptUserGender);
                     saveDataToLocalStorage('userBirth', promptUserBirth);
                     saveDataToLocalStorage('userAge', promptUserAge);
                     saveDataToLocalStorage('userDegree', promptUserDegree);
