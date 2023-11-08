@@ -104,13 +104,13 @@ function App() {
             <Route path="/landing" element={< LandingPage />}></Route>
             <Route path="/spatial-span" element={<SSLanding />}></Route>
             <Route path="/spatial-span/instruction" element={<SSInstruction />}></Route>
-            <Route path="/spatial-span/trial" element={<SSGame userBirth={userBirth} userAge={userAge} userDegree={userDegree}/>}></Route>
+            <Route path="/spatial-span/trial" element={<SSGame userAge={userAge}/>}></Route>
             {/* <Route path="/conjunction-search" element={<CJSLanding />}></Route> */}
             {/* <Route path="/conjunction-search/instruction" element={<CJSInstruction />}></Route> */}
             {/* <Route path="/conjunction-search/trial" element={<CJSGame />}></Route> */}
             <Route path="/go-nogo" element={<GNGLanding />}></Route>
             <Route path="/go-nogo/instruction" element={<GNGInstruction />}></Route>
-            <Route path="/go-nogo/trial" element={<GNGGame userBirth={userBirth} userAge={userAge} userDegree={userDegree}/>}></Route>
+            <Route path="/go-nogo/trial" element={<GNGGame userAge={userAge}/>}></Route>
           </Routes>
           <LoadingSpinner />
       </Router>

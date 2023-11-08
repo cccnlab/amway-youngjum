@@ -14,9 +14,10 @@ import moment from 'moment';
 import RotateAlert from '../../../components/rotateAlert/RotateAlert';
 import { Shuffle } from '../../../scripts/shuffle';
 import { GNG_D_PRIME, GNG_Percentile } from '../../../uitls/gng_norm';
+import { getDataFromLocalStorage } from '../../../uitls/offline';
 import axios from 'axios';
 
-let trialNumber = 10;
+let trialNumber = 100;
 let goSignalColor: string = getComputedStyle(document.documentElement).getPropertyValue('--go-color').trim();
 let noGoSignalColor: string = getComputedStyle(document.documentElement).getPropertyValue('--nogo-color').trim();
 let restColor: string = getComputedStyle(document.documentElement).getPropertyValue('--rest-color').trim();
@@ -94,6 +95,9 @@ let metricDataResult: any[] = [];
 let postEntryResult;
 let dprime;
 let scorePercentile;
+let birth = getDataFromLocalStorage('userBirth');
+let age = getDataFromLocalStorage('userAge');
+let degree = getDataFromLocalStorage('userDegree');
 
 function GNGGame(props) {
     const navigate = useNavigate();
@@ -119,7 +123,7 @@ function GNGGame(props) {
             })
         };
     }, [])
-
+    
     function initiateData() {
         rt = [];
         hitRt = [];
@@ -430,9 +434,9 @@ function GNGGame(props) {
 
     function postEntry(cueDataResult, userInteractionDataResult, gameLogicSchemeResult, scoringDataResult, metricDataResult) {
         postEntryResult = {
-            "userAge" : props.userAge,
-            "userBirth" : props.userBirth,
-            "userDegree" : props.userDegree,
+            "userAge" : age,
+            "userBirth" : birth,
+            "userDegree" : degree,
             "data" : {
                 "rawData" : {
                     "cueData" : cueDataResult,
@@ -516,7 +520,6 @@ function GNGGame(props) {
 
     function checkResp() {
         clickSound();
-        console.log(props.userAge)
         if (currEventId === 1) {
             if (haveToClick === false) {
                 haveToClick = true;
@@ -574,13 +577,17 @@ function GNGGame(props) {
         scoringDataResult = scoringData(rtBound, trialNumber, score);
         metricDataResult = metricData(hitCount, missCount, correctRejectionCount, falseAlarmCount, falseSignalRejectionCount, falseHitCount, hitRt, avgHitRt);
         postEntryResult = postEntry(cueDataResult, userInteractionDataResult, gameLogicSchemeResult, scoringDataResult, metricDataResult);
-        // axios.post('https://hwsrv-1063269.hostwindsdns.com/exercise-api-hard/go-nogo', postEntryResult)
-        //     .then(function (postEntryResult) {
-        //         console.log(postEntryResult)
-        //     })
-        //     .catch(function (error) {
-        //         console.log('error')
-        //     });
+        axios.post('https://vercel-amway-backend.vercel.app/api/gonogo', postEntryResult, {
+            headers:  {
+                "API_KEY" : "kJyG3y94o5BXMp3dDNKsc0DVEffLgRMVI4awIdDuM84krsK9FekFRVYYYklkYk1B"
+            }
+            })
+            .then(function (postEntryResult) {
+                console.log(postEntryResult)
+            })
+            .catch(function (error) {
+                console.log('error')
+            });
     }
 
     function touchStart() {

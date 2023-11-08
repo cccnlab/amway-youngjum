@@ -17,6 +17,7 @@ import { samplingFromList } from '../../../uitls/main';
 import { SS_D_PRIME, SS_Percentile } from '../../../uitls/ss_norm';
 import axios from 'axios';
 import LoadingSpinner from '../../../components/loadingSpinner/LoadingSpinner';
+import { getDataFromLocalStorage } from '../../../uitls/offline';
 
 let progressBarElement: HTMLProgressElement;
 
@@ -95,6 +96,9 @@ let directionMode: string[] = [];
 let postEntryResult;
 let dprime;
 let scorePercentile;
+let birth = getDataFromLocalStorage('userBirth');
+let age = getDataFromLocalStorage('userAge');
+let degree = getDataFromLocalStorage('userDegree');
 
 function SSGame(props) {
   const navigate = useNavigate();
@@ -598,22 +602,22 @@ function seqGenerator() {
       dprime = SS_D_PRIME(score, props.userAge);
       scorePercentile = SS_Percentile(score, props.userAge);
       setIsItDone(true);
-    //   setIsItFetching(true); // make loading spinner appear while 
       let end = endTime();
       trialDataResult = trialData(allSpan, cueDataResult, probeDataResult, allAnswerEnableTime, answerDataResult);
       scoringDataResult = scoringData(trialNumber, spanMultiplier, score);
       metricDataResult = metricData(trialNumber, summaryCorrect, spanInCorrectAns, enterStruggleTimeCount);
       postEntryResult = postEntry(trialDataResult, gameLogicSchemeResult, score, metricDataResult);
-      console.log(postEntryResult)
-    //   axios.post('https://hwsrv-1063269.hostwindsdns.com/kyd-portal/spatial-span/post', postEntryResult)
-    //         .then(function (postEntryResult) {
-    //         })
-    //         .catch(function (error) {
-    //             console.log('error')
-    //         })
-    //         .finally(function () {
-    //             setIsItFetching(false); // stop loading spinner when finished fetching
-    //         });
+      axios.post('https://vercel-amway-backend.vercel.app/api/spatial_span', postEntryResult, {
+              headers:  {
+                  "API_KEY" : "kJyG3y94o5BXMp3dDNKsc0DVEffLgRMVI4awIdDuM84krsK9FekFRVYYYklkYk1B"
+              }
+              })
+              .then(function (postEntryResult) {
+                  console.log(postEntryResult)
+              })
+              .catch(function (error) {
+                  console.log('error')
+              });
   }
 
   function cueData(currSeq: string | any[], cueColor: string, cueBorderColor: string, cueStartTime: any[], cueEndTime: any[]){
@@ -759,9 +763,9 @@ function seqGenerator() {
 
   function postEntry(trialDataResult: any[], gameLogicSchemeResult: { game: string; schemeName: string; version: number; variant: string; parameters: { trialNumber: { value: any; unit: null; description: string }; flashDuration: { value: any; unit: string; description: string }; flashInterval: { value: any; unit: string; description: string }; initialSpan: { value: any; unit: null; description: string }; probeNumber: { value: any; unit: null; description: string }; probeAngularPosition: { value: any; unit: string; description: string }; rampingCorrectCount: { value: any; unit: null; description: string }; maxFailStreakCount: { value: any; unit: null; description: string }; maxFailCount: { value: any; unit: null; description: string } }; description: string }, score: number, metricDataResult: any[]){
       postEntryResult = {
-        "userAge" : props.userAge,
-        "userBirth" : props.userBirth,
-        "userDegree" : props.userDegree,
+        "userAge" : age,
+        "userBirth" : birth,
+        "userDegree" : degree,
         "start" : testStartTime,
         "end" : testEndTime,
         "score" : score,
@@ -844,7 +848,7 @@ function seqGenerator() {
               <div className="SSGameEnterButton"></div>
             </div>
         </div>
-        {isItFetching && <LoadingSpinner fetchTime={isItFetching}/>}  
+        {/* {isItFetching && <LoadingSpinner fetchTime={isItFetching}/>}   */}
         {isItDone ? 
         <div>
             {<ScoreSummaryOverlay sumScores={total} userAge={props.userAge} dprime={dprime} scorePercentile={scorePercentile} refreshPage={refreshPage} backToLandingPage={backToLandingPage}/>}
