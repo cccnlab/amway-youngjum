@@ -95,9 +95,10 @@ let metricDataResult: any[] = [];
 let postEntryResult;
 let dprime;
 let scorePercentile;
-let birth = getDataFromLocalStorage('userBirth');
-let age = getDataFromLocalStorage('userAge');
-let degree = getDataFromLocalStorage('userDegree');
+let userGenderResult;
+let userBirthResult;
+let userAgeResult;
+let userDegreeResult;
 
 function GNGGame(props) {
     const navigate = useNavigate();
@@ -323,6 +324,7 @@ function GNGGame(props) {
                 if (haveDone === false) {
                     haveDone = true;
                     checkAllAns();
+                    checkUserData();
                     Done();
                 }
             }, waitTheWholeTime)
@@ -434,9 +436,10 @@ function GNGGame(props) {
 
     function postEntry(cueDataResult, userInteractionDataResult, gameLogicSchemeResult, scoringDataResult, metricDataResult) {
         postEntryResult = {
-            "userAge" : age,
-            "userBirth" : birth,
-            "userDegree" : degree,
+            "userGender" : userGenderResult,
+            "userAge" : userAgeResult,
+            "userBirth" : userBirthResult,
+            "userDegree" : userDegreeResult,
             "data" : {
                 "rawData" : {
                     "cueData" : cueDataResult,
@@ -564,6 +567,24 @@ function GNGGame(props) {
                     }
                 }
             }
+        }
+    }
+
+    function checkUserData() {
+        let gender = getDataFromLocalStorage('userGender');
+        let birth = getDataFromLocalStorage('userBirth');
+        let age = getDataFromLocalStorage('userAge');
+        let degree = getDataFromLocalStorage('userDegree');
+        if (props.userGender === "XXXX" || props.userBirth === "XXXX" || props.userAge === "XXXX" || props.userDegree === "XXXX"){
+            userGenderResult = gender;
+            userBirthResult = birth;
+            userAgeResult = age;
+            userDegreeResult = degree;
+        } else {
+            userGenderResult = props.userGender;
+            userBirthResult = props.userBirth;
+            userAgeResult = props.userAge;
+            userDegreeResult = props.userDegree;
         }
     }
 

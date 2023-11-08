@@ -96,9 +96,10 @@ let directionMode: string[] = [];
 let postEntryResult;
 let dprime;
 let scorePercentile;
-let birth = getDataFromLocalStorage('userBirth');
-let age = getDataFromLocalStorage('userAge');
-let degree = getDataFromLocalStorage('userDegree');
+let userGenderResult;
+let userBirthResult;
+let userAgeResult;
+let userDegreeResult;
 
 function SSGame(props) {
   const navigate = useNavigate();
@@ -296,6 +297,7 @@ function SSGame(props) {
 
       if (currTrial === trialNumber){
           summaryScore();
+          checkUserData();
           runIsOver();
       }
   };
@@ -763,9 +765,10 @@ function seqGenerator() {
 
   function postEntry(trialDataResult: any[], gameLogicSchemeResult: { game: string; schemeName: string; version: number; variant: string; parameters: { trialNumber: { value: any; unit: null; description: string }; flashDuration: { value: any; unit: string; description: string }; flashInterval: { value: any; unit: string; description: string }; initialSpan: { value: any; unit: null; description: string }; probeNumber: { value: any; unit: null; description: string }; probeAngularPosition: { value: any; unit: string; description: string }; rampingCorrectCount: { value: any; unit: null; description: string }; maxFailStreakCount: { value: any; unit: null; description: string }; maxFailCount: { value: any; unit: null; description: string } }; description: string }, score: number, metricDataResult: any[]){
       postEntryResult = {
-        "userAge" : age,
-        "userBirth" : birth,
-        "userDegree" : degree,
+        "userGender" : userGenderResult,
+        "userAge" : userAgeResult,
+        "userBirth" : userBirthResult,
+        "userDegree" : userDegreeResult,
         "start" : testStartTime,
         "end" : testEndTime,
         "score" : score,
@@ -779,6 +782,24 @@ function seqGenerator() {
       }
       return postEntryResult;
   }
+
+  function checkUserData() {
+    let gender = getDataFromLocalStorage('userGender');
+    let birth = getDataFromLocalStorage('userBirth');
+    let age = getDataFromLocalStorage('userAge');
+    let degree = getDataFromLocalStorage('userDegree');
+    if (props.userGender === "XXXX" || props.userBirth === "XXXX" || props.userAge === "XXXX" || props.userDegree === "XXXX"){
+        userGenderResult = gender;
+        userBirthResult = birth;
+        userAgeResult = age;
+        userDegreeResult = degree;
+    } else {
+        userGenderResult = props.userGender;
+        userBirthResult = props.userBirth;
+        userAgeResult = props.userAge;
+        userDegreeResult = props.userDegree;
+    }
+}
 
   function summaryScore() {
       for (let correctIndex = latestIndex; correctIndex < checkAns.length; correctIndex++) {
